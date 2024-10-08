@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제품 페이지</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="header.js" defer></script>
+    <link rel="stylesheet" href="headfoot.css">
+</head>
+<body>
+    <div id="app">
+        <div class="prod-detail">
+            <a v-for="(item, index) in toy" 
+               @click="showDetail(item.id)">
+                <img :src="item.src" v-if="num === item.id">
+                <div v-if="num !== item.id">
+                    <img :src="item.src">
+                    <p>{{ item.description }}</p>
+                    <p>{{ item.price }}원</p>
+                </div>
+            </a>
+        </div>
+        <div class="detail-view" v-if="num !== null">
+            <img :src="selectedItem.src2">
+            <p>{{ selectedItem.description }}</p>
+            <p>{{ selectedItem.price }}원</p>
+            <button @click="fnAddCart(selectedItem.id)">장바구니에 담기</button>
+        </div>
+    </div>
+    <script src="footer.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    toy: [
+                        { id: 21, src: 'images/터널1.jpg', description: '숨숨터널 고양이 터널 하우스 장난감', price: '30,540', src2: 'images/터널1디테일.jpg' },
+                        { id: 22, src: 'images/낚시대1.jpg', description: '고양이 낚시대 우드, 깃털, 와이어 장난감', price: '6,900', src2: 'images/낚시대1디테일.jpg' },
+                        { id: 23, src: 'images/공놀이1.jpg', description: '반자동 움직이는 공놀이 장난감 4단, 블루', price: '10,200', src2: 'images/공놀이1디테일.jpg' },
+                        { id: 24, src: 'images/캣닢볼1.jpg', description: '고냥냥 대왕 캣닢볼 고양이 장난감', price: '9,900', src2: 'images/캣닢볼1디테일.png' }
+                    ],
+                    num: null,
+                    selectedItem: {}
+                }
+            },
+            methods: {
+                showDetail(id) {
+                    this.num = id;
+                    this.selectedItem = this.toy.find(item => item.id === id);
+                },
+                fnAddCart(id){
+                    this.selectedItem = this.toy.find(item=>item.id===id);
+                    var userId = sessionStorage.getItem('id');
+                    if(this.selectedItem){
+                        var cart = JSON.parse(localStorage.getItem('cartItems'))||[];
+                        cart.push({
+                            src:this.selectedItem.src,
+                            price:this.selectedItem.price,
+                            id:this.selectedItem.id,
+                            userId:userId
+                        });
+                        localStorage.setItem('cartItems', JSON.stringify(cart));
+                        location.href='cart.html'
+                    }else{
+                        console.error('아이템이 없습니다')
+                    }    
+                }  
+            }
+        });
+        app.mount('#app');
+    </script>
+</body>
+</html>
+

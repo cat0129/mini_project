@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 정보 수정</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="headfoot.css">
+    <script src="header.js" defer></script>
+</head>
+<body>
+    <div id="app">
+        <div><h1>회원 정보 수정</h1></div>
+        <div v-if="!isClick">
+            <table style="text-align: center;">
+                <tr>
+                    <th>아이디</th>
+                    <th>비밀번호</th>
+                    <th>이름</th>
+                    <th>생년월일</th>
+                    <th>이메일</th>
+                    <th>전화번호</th>
+                    <th>수정</th>
+                </tr>
+                <tr v-for="item in userList" :key="item.id">
+                    <td>{{item.id}}</td>
+                    <td>{{item.pwd}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.birth}}</td>
+                    <td>{{item.email}}</td>
+                    <td>{{item.phone}}</td>
+                    <td><button @click="fnEditUser(item)">수정</button></td>
+                </tr>
+            </table>
+        </div>
+        <div v-if="isClick">
+            <table style="text-align: center;">
+                <tr>
+                    <th>아이디</th>
+                    <th>비밀번호</th>
+                    <th>이름</th>
+                    <th>생년월일</th>
+                    <th>이메일</th>
+                    <th>전화번호</th>
+                    <th>수정</th>
+                </tr>
+                <tr v-for="(item, index) in userList" :key="item.id">
+                    <td><input type="text" v-model="userList[index].id"></td>
+                    <td><input type="text" v-model="userList[index].pwd"></td>
+                    <td><input type="text" v-model="userList[index].name"></td>
+                    <td><input type="text" v-model="userList[index].birth"></td>
+                    <td><input type="text" v-model="userList[index].email"></td>
+                    <td><input type="text" v-model="userList[index].phone"></td>
+                    <td><button @click="fnUpdateUser(index)">수정</button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    userList: [],
+                    isClick: false
+                };
+            },
+            methods: {
+                fnUserList() {
+                    $.ajax({
+                        url: 'http://localhost:3000/userlist',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({}),
+                        success: (data) => {
+                            this.userList = data;
+                        }
+                    });
+                },
+                fnEditUser(item) {
+                    this.isClick = true;
+                    // 현재 선택된 사용자 정보를 userList의 해당 항목에 설정
+                    this.userList = this.userList.map(user =>
+                        user.id === item.id ? { ...user } : user
+                    );
+                },
+                fnUpdateUser(index) {
+                    const updatedUser = this.userList[index];
+                    $.ajax({
+                        url: 'http://localhost:3000/updateuser',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(updatedUser),
+                        success: (data) => {
+                            alert(data.message);
+                            this.isClick = false;
+                            this.fnUserList(); 
+                        }
+                    });
+                }
+            },
+            mounted() {
+                this.fnUserList();
+            }
+        });
+        app.mount('#app');
+    </script>
+</body>
+</html>

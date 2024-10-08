@@ -1,0 +1,74 @@
+header{
+    text-align: center;
+    align-items: center;
+    padding: 10px;
+    justify-content: space-between;
+    margin-bottom: 80px;
+    position: relative;
+}
+footer {
+    padding: 150px ; /* 안쪽 여백 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+}
+.footer-gray{
+    color: gray;
+}
+.gnb {
+    position: absolute;
+    right: 10px; top: 10px;
+}
+.board-link, .signin-link, .login-link, .admin-link{
+    font-size: 20px;
+    margin: 0px auto;
+}
+.gnb a {
+    color: rgb(31, 29, 6);
+    transition: .2s;
+}
+
+.gnb a + a {
+    margin-left: 20px;
+}
+
+.gnb a:hover {
+    color: black;
+
+}
+.title{
+    display: inline-block;
+    font-size: 50px;
+    text-align: center;
+    font-weight: 200;
+    align-items: center;
+}
+.dropdown{
+    position : relative;
+    display : inline-block;
+    text-align: center;
+  }
+  .dropdown-content{
+    display : none;
+    position : absolute;
+    z-index : 1; /*다른 요소들보다 앞에 배치*/
+    font-weight: 400;
+    min-width : 200px;
+  }
+  
+  .dropdown-content a{
+    display : block;
+    text-decoration : none;
+    font-size: 20px;
+    padding : 12px 20px;
+  }
+  nav{width: 100%; max-width: 800px; margin: 20px auto;}
+  nav ul{list-style: none;z-index: 2; margin: 20px auto;}
+  nav a{color:#000;text-decoration: none;}
+  nav > ul{display: flex; width: 100%; justify-content: space-between; padding:10px;}
+  nav > ul > li{position: relative; margin: 20px auto;}
+  nav > ul > li > a{font-size: 20px; padding:10px 0; margin: 20px auto; }
+  nav > ul > li > a:hover{color:#999;}
+  nav > ul > li > ul{display: none; position: absolute; left:50%; transform: translateX(-50%);border:1px solid #ddd;border-radius: 6px;background:white; margin: 20px auto; white-space: nowrap; padding: 0px; margin: 0px;} 
+  nav > ul > li:hover ul{display:block;}
+  nav > ul > li  li a{display: block; padding:10px 15px; margin: 20px auto;}
+  nav > ul > li  li a:hover{background:#eee;}
+  nav > ul > li > li + li{margin-top:5px;}

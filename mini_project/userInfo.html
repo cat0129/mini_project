@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 관리</title>
+    <script src="jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="headfoot.css">
+    <script src="header.js" defer></script>
+</head>
+<body>
+    <div id="app">
+        <div><h1>회원 관리</h1></div>
+        <div style="text-align: center;">
+            <input type="text" v-model="name" @keyup.enter="fnSearch()"><button @click="fnSearch()">검색</button>
+        </div>
+
+        <!-- 사용자 목록 -->
+        <div v-if="!isEditing">
+            <table style="text-align: center;">
+                <tr>
+                    <th>아이디</th>
+                    <th>비밀번호</th>
+                    <th>이름</th>
+                    <th>생년월일</th>
+                    <th>이메일</th>
+                    <th>전화번호</th>
+                    <th>성별</th>
+                    <th>권한</th>
+                    <th>삭제</th>
+                    <th>수정</th>
+                </tr>
+                <tr v-for="item in userList" :key="item.id">
+                    <td>{{item.id}}</td>
+                    <td>{{item.pwd}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.birth}}</td>
+                    <td>{{item.email}}</td>
+                    <td>{{item.phone}}</td>
+                    <td>{{item.gender}}</td>
+                    <td>{{item.authority}}</td>
+                    <td><button @click="fnDeleteUser(item.id)">삭제</button></td>
+                    <td><button @click="fnEditUser(item)">수정</button></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 수정 모드 -->
+        <div v-if="isEditing">
+            <table style="text-align: center;">
+                <tr>
+                    <th>아이디</th>
+                    <th>비밀번호</th>
+                    <th>이름</th>
+                    <th>생년월일</th>
+                    <th>이메일</th>
+                    <th>전화번호</th>
+                    <th>성별</th>
+                    <th>권한</th>
+                    <th>수정</th>
+                </tr>
+                <tr>
+                    <td><input type="text" v-model="currentUser.id"></td>
+                    <td><input type="text" v-model="currentUser.pwd"></td>
+                    <td><input type="text" v-model="currentUser.name"></td>
+                    <td><input type="text" v-model="currentUser.birth"></td>
+                    <td><input type="text" v-model="currentUser.email"></td>
+                    <td><input type="text" v-model="currentUser.phone"></td>
+                    <td><input type="text" v-model="currentUser.gender"></td>
+                    <td><input type="text" v-model="currentUser.authority"></td>
+                    <td><button @click="fnUpdateUser()">수정</button></td>
+                </tr>
+            </table>
+        </div>
+    </div> 
+    
+    <script src="footer.js"></script>    
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    userList: [],
+                    name: "",
+                    isEditing: false,
+                    currentUser: null
+                };
+            },
+            methods: {
+                fnUserList() {
+                    var self = this;
+                    $.ajax({
+                        url: 'http://localhost:3000/userlist',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({}),
+                        success: function(data) {
+                            self.userList = data;
+                        }
+                    });
+                },
+                fnDeleteUser(id) {
+                    var self = this;
+                    $.ajax({
+                        url: 'http://localhost:3000/deleteuser',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ id: id }),
+                        success: function(data) {
+                            self.fnUserList();
+                        }
+                    });
+                },
+                fnSearch() {
+                    var self = this;
+                    $.ajax({
+                        url: 'http://localhost:3000/searchuser',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ name: this.name }),
+                        success: function(data) {
+                            self.userList = data;
+                        }
+                    });
+                },
+                fnUpdateUser() {
+                    var self = this;
+                    if (this.currentUser) {
+                        $.ajax({
+                            url: 'http://localhost:3000/updateuser',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify(this.currentUser),
+                            success: function(data) {
+                                self.fnUserList();
+                                self.isEditing = false;
+                                self.currentUser = null;
+                            }
+                        });
+                    }
+                },
+                fnEditUser(user) {
+                    this.currentUser = { ...user }; // 현재 수정할 사용자 정보를 복사
+                    this.isEditing = true;
+                }
+            },
+            mounted() {
+                this.fnUserList();
+            }
+        });
+        app.mount('#app');
+    </script>
+</body>
+</html>

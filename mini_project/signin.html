@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <script src="jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="headfoot.css">
+    <script src="header.js" defer></script>
+</head>
+<body>
+    <div id="app">
+        <div id="container">
+            <h1>회원가입</h1><br>
+            <div class="box"><label class="label">아이디</label><input type="text" v-model="userInfo.id"></div>
+            <div><button @click="fnIdCheck()">중복확인</button></div>
+            <div class="box"><label class="label">비밀번호</label><input type="password" v-model="userInfo.pwd"></div>
+            <div class="box"><label class="label">비밀번호 확인</label><input type="password" v-model="userInfo.pwd2"></div>
+            <div class="box"><label class="label">이름</label><input type="text" v-model="userInfo.name"></div>
+            <div class="box"><label class="label">생년월일</label><input type="date" v-model="userInfo.birth"></div>
+            <div class="box"><label class="label">이메일</label><input type="text" v-model="userInfo.email"></div>
+            <div class="box"><label class="label">전화번호</label><input type="tel" v-model="userInfo.phone"></div>
+            <div class="box"><label class="label">성별</label>
+                <label class="radio-gender"><input type="radio" name="gender" value="M" v-model="userInfo.gender"><span
+                        class="radio-text">남자</span></label>
+                <label class="radio-gender"><input type="radio" name="gender" value="F" v-model="userInfo.gender"><span
+                        class="radio-text">여자</span></label>
+            </div>
+            <button class="button" @click="fnSignIn()">회원가입</button>
+        </div>
+    </div>
+</body>
+
+</html>
+<script src="footer.js"></script>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                userInfo: {
+                    id: "",
+                    pwd: "",
+                    pwd2: "",
+                    name: "",
+                    birth: "",
+                    email: "",
+                    phone: "",
+                    gender: ""
+                }
+            }
+
+        },
+        methods: {
+            fnIdCheck() {
+                var self = this;
+                var url = `http://localhost:3000/idcheck?id=${self.userInfo.id}`
+
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    type: "GET",
+                    data: {},
+                    success: function (data) {
+                        if (data[0].CNT != 0) {
+                            alert("아이디 중복");
+                        } else {
+                            alert("가입 가능");
+                        }
+                    }
+                })
+            },
+
+            fnSignIn() {
+
+                var self = this;
+                var url = `http://localhost:3000/signin`;
+                var hasEmptyField = false;
+                Object.values(this.userInfo).forEach((value) => {
+                    if (value === '' || value === undefined) {
+                        hasEmptyField = true;
+                        
+                    }
+                });
+                if (hasEmptyField) {
+                    alert("빈칸을 채워주세요");
+                    return;
+                }
+                if (this.userInfo.pwd != this.userInfo.pwd2) {
+                    alert("비밀번호가 일치하지 않습니다");
+                    return;
+                }
+
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    type: "POST",
+                    data: JSON.stringify(self.userInfo),
+                    contentType: "application/json",
+                    success: function (data) {
+                        console.log(data);
+                        alert("가입을 환영합니다");
+                        location.href='main.html';
+                    }
+                })
+            }
+
+        },
+        mounted() { }
+
+    });
+    app.mount('#app');
+</script>

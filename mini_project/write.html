@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상세정보</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="headfoot.css">
+    <script src="header.js" defer></script>
+    <style>
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+    </style>    
+</head>
+<body>
+    <div id="app"> 
+        <div id="container">
+        <div><h3>제목</h3><textarea rows="2" cols="100" v-model="writeInfo.title"></textarea></div>
+        <div><h3>내용</h3><textarea rows="20" cols="100" v-model="writeInfo.contents"></textarea></div>
+        <div><button @click="fnWrite()">저장</button><button @click="fnBoardList()">목록</button></div>
+        </div>
+    </div>   
+</body>
+</html>
+<script src="footer.js"></script>
+<script>
+    const app = Vue.createApp({
+        data(){
+            return{
+                writeInfo: {
+                    boardno: "",
+                    title: "",
+                    contents: "",
+                    id: sessionStorage.getItem("id"),
+                    viewno: 0
+                }
+            }
+        },
+        methods: {
+            fnWrite(){
+                var self = this;
+                $.ajax({
+                    url: `http://localhost:3000/write`,
+                    type: "POST",
+                    data: JSON.stringify(this.writeInfo),
+                    contentType: "application/json",
+                    success: function(data) {
+                        alert(data.message); // 서버에서 반환한 메시지를 표시
+                        location.href="board.html"
+                        console.log(data);
+                    },
+                })
+            },
+            fnBoardList(){
+                location.href="board.html"
+            }
+
+        },
+        mounted(){
+            
+        }
+
+    });
+    app.mount('#app');
+</script>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제품 페이지</title>
+    <title>사료/간식</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="header.js" defer></script>
+    <link rel="stylesheet" href="headfoot.css">
+</head>
+<body>
+    <div id="app">
+        <div class="prod-detail">
+            <a v-for="(item, index) in plate" 
+               @click="showDetail(item.id)">
+                <img :src="item.src" v-if="num === item.id">
+                <div v-if="num !== item.id">
+                    <img :src="item.src">
+                    <p>{{ item.description }}</p>
+                    <p>{{ item.price }}원</p>
+                </div>
+            </a>
+        </div>
+        <div class="detail-view" v-if="num !== null">
+            <img :src="selectedItem.src2">
+            <p>{{ selectedItem.description }}</p>
+            <p>{{ selectedItem.price }}원</p>
+            <button @click="fnAddCart(selectedItem.id)">장바구니에 담기</button>
+        </div>
+    </div>
+    <script src="footer.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    plate: [
+                        { id: 9, src: 'images/급수기1.jpg', description: '디토펫 반려동물 스테인리스 음수기 2L', price: '20,310', src2: 'images/급수기1디테일.jpg' },
+                        { id: 10, src: 'images/급수식기1.jpg', description: '딩동펫 반려동물 듀러블 3구 급수식기', price: '12,250', src2: 'images/급수식기1디테일.jpg' },
+                        { id: 11, src: 'images/급수기2.jpg', description: '루나글램 고양이 정수기 급수기 음수대', price: '18,900', src2: 'images/급수기2디테일.jpg' },
+                        { id: 12, src: 'images/자동급식기1.jpg', description: '헤이홈 반려동물 스마트 펫 자동급식기 Air', price: '88,000', src2: 'images/자동급식기1디테일.png' }
+                    ],
+                    num: null,
+                    selectedItem: {}
+                }
+            },
+            methods: {
+                showDetail(id) {
+                    this.num = id;
+                    this.selectedItem = this.plate.find(item => item.id === id);
+                },
+                fnAddCart(id){
+                    this.selectedItem = this.plate.find(item=>item.id===id)
+                    var userId = sessionStorage.getItem('id');
+                    if(this.selectedItem){
+                        var cart = JSON.parse(localStorage.getItem('cartItems'))||[];
+                        cart.push({
+                            src:this.selectedItem.src,
+                            price:this.selectedItem.price,
+                            id:this.selectedItem.id,
+                            userId:userId
+                        });
+                        localStorage.setItem('cartItems', JSON.stringify(cart));
+                        location.href='cart.html'
+                    }else{
+                        console.error('아이템이 없습니다')
+                    }    
+                }  
+            }
+        });
+        app.mount('#app');
+    </script>
+</body>
+</html>
+ 

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사료/간식</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="header.js" defer></script>
+    <link rel="stylesheet" href="headfoot.css">
+</head>
+<body>
+    <div id="app">
+        <div class="prod-detail">
+            <a v-for="(item, index) in food" 
+               @click="showDetail(item.id)">
+                <img :src="item.src" v-if="num === item.id">
+                <div v-if="num !== item.id">
+                    <img :src="item.src">
+                    <p>{{ item.description }}</p>
+                    <p>{{ item.price}}원</p>
+                </div>
+            </a>
+        </div>
+        <div class="detail-view" v-if="num !== null">
+            <img :src="selectedItem.src2">
+            <p>{{ selectedItem.description }}</p>
+            <p>{{ selectedItem.price}}원</p>
+            <button @click="fnAddCart(selectedItem.id)">장바구니에 담기</button>
+        </div>
+    </div>
+<script src="footer.js"></script>
+<script>
+    const app = Vue.createApp({
+        data(){
+            return{
+                food: [
+                        { id: 1, src: 'images/고양이사료1.jpg', description: '탐사 전연령용 고양이 사료 20kg', price:'40,000', src2:'images/사료1디테일.jpg'},
+                        { id: 2, src: 'images/고양이사료2.jpg', description: '전연령 그레인프리 유리너리 건식사료', price: '40,000', src2:'images/사료2디테일.jpg'},
+                        { id: 3, src: 'images/고양이사료3.jpg', description: '어린 고양이용 키튼 플러스 건식사료', price: '16,300', src2:'images/사료3디테일.jpg' },
+                        { id: 4, src: 'images/고양이간식1.jpg', description: '챠오 츄르 참치 버라이어티 560g', price: '21,300', src2:'images/간식1디테일.jpg' }
+                    ],
+                    num: null,
+                    selectedItem: {}
+            }
+
+        },
+        methods: {
+            showDetail(id) {
+                    this.num = id;
+                    this.selectedItem = this.food.find(item => item.id === id);
+                },
+            fnAddCart(id){
+                this.selectedItem = this.food.find(item=>item.id===id);
+                var userId = sessionStorage.getItem('id');
+                if(this.selectedItem&&userId){
+                    var cart = JSON.parse(localStorage.getItem('cartItems'))||[];
+                    cart.push({
+                        src:this.selectedItem.src,
+                        price:this.selectedItem.price,
+                        id:this.selectedItem.id,
+                        userId : userId
+                    });
+                    localStorage.setItem('cartItems', JSON.stringify(cart));
+                    location.href='cart.html'
+
+                }else{
+                    console.error('아이템이 없습니다')
+                }    
+            }    
+        },
+        mounted(){}
+
+    });
+    app.mount('#app');
+</script>
+</body>
+</html>

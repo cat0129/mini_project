@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="headfoot.css">
+    <script src="header.js" defer></script>
+</head>
+<body>
+    <div id="app"> 
+    <div id="container">
+        <div class="box"><label class="label">아이디</label><input type="text" v-model="login.id"></div>
+        <div class="box"><label class="label">비밀번호</label><input type="text" v-model="login.pwd" @keydown.enter="fnLogin"></div>
+        <button class="button" @click="fnLogin()">로그인</button>
+    </div>   
+    </div>   
+</body>
+</html>
+<script src="footer.js"></script>
+<script>
+    const app = Vue.createApp({
+        data(){
+            return{
+                login : {
+                    id : "",
+                    pwd : ""
+                }      
+            }
+        },
+        methods: {
+            fnLogin(){
+	        var self = this;
+	        $.ajax({
+		    url: "http://localhost:3000/login",
+		    dataType: "json",
+		    type: "POST",
+		    data: JSON.stringify(self.login),
+		    contentType : "application/json",
+		    success: function (data) {
+			    if(data.length != 0){
+				    sessionStorage.setItem("id", data[0].ID); 
+                    sessionStorage.setItem("authority", data[0].AUTHORITY);
+                    console.log(data[0].AUTHORITY);
+                    location.href = "main.html";
+			} else {
+				    alert("다시 확인");
+                    
+			}}
+	});
+},          
+        mounted(){        
+        }
+    }});
+    app.mount('#app');
+</script>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제품 페이지</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="header.js" defer></script>
+    <link rel="stylesheet" href="headfoot.css">
+</head>
+<body>
+    <div id="app">
+        <div class="prod-detail">
+            <a v-for="(item, index) in toilet" 
+               @click="showDetail(item.id)">
+                <img :src="item.src" v-if="num === item.id">
+                <div v-if="num !== item.id">
+                    <img :src="item.src">
+                    <p>{{ item.description }}</p>
+                    <p>{{ item.price }}원</p>
+                </div>
+            </a>
+        </div>
+        <div class="detail-view" v-if="num !== null">
+            <img :src="selectedItem.src2">
+            <p>{{ selectedItem.description }}</p>
+            <p>{{ selectedItem.price }}원</p>
+            <button @click="fnAddCart(selectedItem.id)">장바구니에 담기</button>
+        </div>
+    </div>
+    <script src="footer.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    toilet: [
+                        { id: 17, src: 'images/모래1.jpg', description: '베이직 프리미엄 고양이 두부모래 녹차향', price: '27,540', src2: 'images/모래1디테일.jpg' },
+                        { id: 18, src: 'images/모래2.jpg', description: '포우장 먼지 안녕 벤토나이트 고양이 모래', price: '40,900', src2: 'images/모래2디테일.jpg' },
+                        { id: 19, src: 'images/화장실1.jpg', description: '탐사 베이직 대용량 고양이 화장실 모래삽', price: '8,900', src2: 'images/화장실1디테일.jpg' },
+                        { id: 20, src: 'images/매트1.png', description: '이지클린 고양이 화장실 모래매트 특대형', price: '18,900', src2: 'images/매트1디테일.jpg' }
+                    ],
+                    num: null,
+                    selectedItem: {}
+                }
+            },
+            methods: {
+                showDetail(id) {
+                    this.num = id;
+                    this.selectedItem = this.toilet.find(item => item.id === id);
+                },
+                fnAddCart(id){
+                    this.selectedItem = this.toilet.find(item=>item.id===id);
+                    var userId = sessionStorage.getItem('id');
+                    if(this.selectedItem){
+                        var cart = JSON.parse(localStorage.getItem('cartItems'))||[];
+                        cart.push({
+                            src:this.selectedItem.src,
+                            price:this.selectedItem.price,
+                            id:this.selectedItem.id,
+                            userId:userId
+                        });
+                        localStorage.setItem('cartItems', JSON.stringify(cart));
+                        location.href='cart.html'
+                    }else{
+                        console.error('아이템이 없습니다')
+                    }    
+                }  
+            }
+        });
+        app.mount('#app');
+    </script>
+</body>
+</html>
+

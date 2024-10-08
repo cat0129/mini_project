@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장바구니</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="headfoot.css">
+    <script src="header.js" defer></script>
+    <style>
+        .cart-item{
+            text-align: center;
+        }
+        h1{
+            text-align: center;
+        }
+        h2{
+            text-align: center;
+            color: gray;;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>장바구니</h1>
+        <div v-for="item in cartItems" class="cart-item">
+            <img :src="item.src">
+            <p>{{item.price}}원</p>
+            <button @click="fnRemoveCart(item.id)">장바구니에서 삭제</button>
+        </div>
+        <br>
+        <div v-if="cartItems.length > 0">
+            <h2 style="color: black;">총 금액 : {{ fnTotal() }}원</h2>
+        </div>
+        <div v-if="cartItems.length===0">
+            <h2>장바구니가 비었습니다</h2>
+        </div>
+    </div>
+<script src="footer.js"></script>
+<script>
+    const app = Vue.createApp({
+        data(){
+            return {
+                cartItems : []
+        }
+        },
+       
+        methods : {
+            fnRemoveCart(id){
+                var cart = JSON.parse(localStorage.getItem('cartItems'))||[]; 
+                cart = cart.filter(item => item.id !== id);
+                localStorage.setItem('cartItems',JSON.stringify(cart));
+                this.cartItems = cart;
+            },
+            fnTotal(){
+                return this.cartItems.reduce((total,item)=>{
+                    return total + parseInt(item.price.replace(/,/g,''),10);
+                },0).toLocaleString();
+            }
+            
+        },
+        mounted() {
+            var userId = sessionStorage.getItem('id');
+            var cart = JSON.parse(localStorage.getItem('cartItems'))||[];
+            if(userId){
+                this.cartItems = cart.filter(item=>item.userId===userId)
+            }else{
+            console.error('사용자 ID가 없습니다')
+            this.cartItems = [];}
+            }       
+    });
+    app.mount('#app')
+</script>    
+</body>
+</html>

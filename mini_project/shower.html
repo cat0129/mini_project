@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제품 페이지</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="header.js" defer></script>
+    <link rel="stylesheet" href="headfoot.css">
+</head>
+<body>
+    <div id="app">
+        <div class="prod-detail">
+            <a v-for="(item, index) in shower" 
+               @click="showDetail(item.id)">
+                <img :src="item.src" v-if="num === item.id">
+                <div v-if="num !== item.id">
+                    <img :src="item.src">
+                    <p>{{ item.description }}</p>
+                    <p>{{ item.price }}원</p>
+                </div>
+            </a>
+        </div>
+        <div class="detail-view" v-if="num !== null">
+            <img :src="selectedItem.src2">
+            <p>{{ selectedItem.description }}</p>
+            <p>{{ selectedItem.price }}원</p>
+            <button @click="fnAddCart(selectedItem.id)">장바구니에 담기</button>
+        </div>
+    </div>
+    <script src="footer.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    shower: [
+                        { id: 13, src: 'images/샴푸1.png', description: '브리지테일 페토세라 저자극 고양이 보습 샴푸', price: '22,540', src2: 'images/샴푸1디테일.jpg' },
+                        { id: 14, src: 'images/샴푸2.jpg', description: '부스트 샴푸 캣 300ml 저자극 애플블라썸향, 300ml', price: '11,900', src2: 'images/샴푸2디테일.jpg' },
+                        { id: 15, src: 'images/브러쉬1.jpg', description: '뽀송 고양이 죽은털 제거 브러쉬 장모단모 공용', price: '18,900', src2: 'images/브러쉬1디테일.jpg' },
+                        { id: 16, src: 'images/드라이룸1.jpg', description: '딩동펫 반려동물 접이식 큐브 드라이룸', price: '28,400', src2: 'images/드라이룸1디테일.jpg' }
+                    ],
+                    num: null,
+                    selectedItem: {}
+                }
+            },
+            methods: {
+                showDetail(id) {
+                    this.num = id;
+                    this.selectedItem = this.shower.find(item => item.id === id);
+                },
+                fnAddCart(id){
+                    this.selectedItem = this.shower.find(item=>item.id===id)
+                    var userId = sessionStorage.getItem('id');
+                    if(this.selectedItem){
+                        var cart = JSON.parse(localStorage.getItem('cartItems'))||[];
+                        cart.push({
+                            src:this.selectedItem.src,
+                            price:this.selectedItem.price,
+                            id:this.selectedItem.id,
+                            userId:userId
+                        });
+                        localStorage.setItem('cartItems', JSON.stringify(cart));
+                        location.href='cart.html'
+                    }else{
+                        console.error('아이템이 없습니다')
+                    }    
+                }  
+            }
+        });
+        app.mount('#app');
+    </script>
+</body>
+</html>
+

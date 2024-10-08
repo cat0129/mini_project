@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제품 페이지</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="headfoot.css">
+    <script src="header.js" defer></script>
+</head>
+<body>
+    <div id="app">
+        <div class="prod-detail">
+            <a v-for="(item, index) in furniture" 
+               @click="showDetail(item.id)">
+                <img :src="item.src" v-if="num === item.id">
+                <div v-if="num !== item.id">
+                    <img :src="item.src">
+                    <p>{{ item.description }}</p>
+                    <p>{{ item.price }}원</p>
+                </div>
+            </a>
+        </div>
+        <div class="detail-view" v-if="num !== null">
+            <img :src="selectedItem.src2">
+            <p>{{ selectedItem.description }}</p>
+            <p>{{ selectedItem.price }}원</p>
+            <button @click="fnAddCart(selectedItem.id)">장바구니에 담기</button>
+        </div>
+    </div>
+    <script src="footer.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    furniture: [
+                        { id: 5, src: 'images/캣휠1.jpg', description: '딩동펫 익사이트 우드 캣휠', price: '166,000', src2: 'images/캣휠1디테일.jpg' },
+                        { id: 6, src: 'images/박스1.jpg', description: '탐사 고양이 스크래처 박스, 바나나', price: '7,290', src2: 'images/박스1디테일.jpg' },
+                        { id: 7, src: 'images/하우스1.jpg', description: '펫츠몬 고양이 우드 스크래쳐 하우스', price: '20,300', src2: 'images/하우스1디테일.jpg' },
+                        { id: 8, src: 'images/캣타워1.jpg', description: '삼익가구 4단 클라이밍보드 원목 캣타워', price: '199,000', src2: 'images/캣타워1디테일.jpg' },
+                        { id:29, src:'images/캣타워2.jpg', description:'삼익가구 그라운캣 6단 하우스 원목 캣타워', price: '211,650', src2: 'images/캣타워2디테일.jpg'}
+                    ],
+                    num: null,
+                    selectedItem: {}
+                }
+            },
+            methods: {
+                showDetail(id) {
+                    this.num = id;
+                    this.selectedItem = this.furniture.find(item => item.id === id);
+                },
+                fnAddCart(id){
+                    this.selectedItem = this.furniture.find(item=>item.id===id)
+                    var userId = sessionStorage.getItem('id');
+                    if(this.selectedItem){
+                        var cart = JSON.parse(localStorage.getItem('cartItems'))||[];
+                        cart.push({
+                            src:this.selectedItem.src,
+                            price:this.selectedItem.price,
+                            id:this.selectedItem.id,
+                            userId:userId
+                        });
+                        localStorage.setItem('cartItems', JSON.stringify(cart));
+                        location.href='cart.html'
+                    }else{
+                        console.error('아이템이 없습니다')
+                    }    
+                }  
+            },
+            mounted(){}
+        });
+        app.mount('#app');
+    </script>
+</body>
+</html>

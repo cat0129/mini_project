@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 정보</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="headfoot.css">
+    <link rel="stylesheet" href="main.css">
+    <script src="header.js" defer></script>
+    <style>
+        .column-td{
+            background-color: palegoldenrod;
+        }
+        td{
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div>
+            <h1>나의 정보</h1>
+            <table>
+                <tr>
+                    <td class="column-td">아이디</td>
+                    <td>{{user.id}}</td>
+                </tr>
+                <tr>
+                    <td class="column-td">이름</td>
+                    <td>{{user.name}}</td>
+                </tr>
+                <tr>
+                    <td class="column-td">생년월일</td>
+                    <td>{{user.birth}}</td>
+                </tr>
+                <tr>
+                    <td class="column-td">이메일</td>
+                    <td>{{user.email}}</td>
+                </tr>
+                <tr>
+                    <td class="column-td">전화번호</td>
+                    <td>{{user.phone}}</td>
+                </tr>
+                <tr>
+                    <td class="column-td">성별</td>
+                    <td>{{user.gender}}</td>
+                </tr>
+                <tr>
+                    <td class="column-td">권한</td>
+                    <td>{{user.authority}}</td>
+                </tr>
+            </table>
+            <div><button @click="fnSignOut(user.id)">회원 탈퇴</button></div>
+        </div>
+    </div>
+<script src="footer.js"></script>    
+<script>
+    const app = Vue.createApp({
+        data(){
+            return{
+                user : {
+                    id : "",
+                    pwd : "",
+                    name : "",
+                    birth : "",
+                    email : "",
+                    phone : "",
+                    gender : "",
+                    authority : ""
+                },
+                // id : sessionStorage.getItem('id')
+            }
+        },
+        methods: {
+            fnUser(){
+                var self = this;
+                $.ajax({
+                    url: `http://localhost:3000/mypage`,
+                    dataType: "json",
+                    type: "POST",
+                    data: JSON.stringify({
+                            id : sessionStorage.getItem('id')
+                        }),
+                    contentType: "application/json",
+                    success: function (data) {
+                        self.user = data[0];
+                    }
+                })
+            },
+            fnSignOut(id){
+                var self = this;
+                    $.ajax({
+                    url: 'http://localhost:3000/deleteuser',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({id:id}),
+                    success:function(data){
+                        self.userList = data;
+                        alert("탈퇴되었습니다")
+                        location.href='main.html';
+                    } })
+            }              
+            },
+            mounted() {
+                this.fnUser();
+            }
+        });
+    app.mount('#app');
+</script>
+</body>
+</html>
+
+
+
+                 
+                    
+                    
+                           

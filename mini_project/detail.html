@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상세정보</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="header.js" defer></script>
+    <link rel="stylesheet" href="headfoot.css">
+</head>
+<body>
+    <div id="app"> 
+        <div class="detail-view" v-if="selectedItem">
+            <img :src="selectedItem.src">
+            <p>{{ selectedItem.description }}</p>
+            <button @click="fnAddCart(selectedItem.id)">장바구니에 담기</button>
+        </div>
+    <p v-else>Loading...</p>
+    </div>   
+</body>
+</html>
+<script src="footer.js"></script>
+<script>
+    const app = Vue.createApp({
+        data(){
+            return{
+                products : [
+                    { id: 25, src: 'images/간식1디테일.jpg', price:'21,300'},
+                    { id: 26, src: 'images/낚시대1디테일.jpg', price:'6900'},
+                    { id: 27, src: 'images/브러쉬1디테일.jpg', price:'18,900'},
+                    { id: 28, src: 'images/캣타워2디테일.jpg', price:'211,000'}
+                ],
+                selectedItem : null
+            }
+
+        },
+        methods: { 
+           
+
+        },
+        mounted(){
+            const params = new URLSearchParams(window.location.search);
+                const id = params.get('id');
+                const src = params.get('src');
+                console.log(src);
+                
+                if (id !== null) {
+                    this.selectedItem = this.products.find(product => product.id === parseInt(id));
+                }
+        }
+
+    });
+    app.mount('#app');
+</script>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자유게시판</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="header.js" defer></script>
+    <link rel="stylesheet" href="headfoot.css">
+</head>
+<body>
+<div id="app">
+    <div id="board-container">
+        <table style="width: 1200px;">
+            <tr>
+                <th>글번호: {{ board.BOARDNO }}</th>
+                <th>작성자: {{ board.ID }}</th>
+                <th>조회수: {{ board.VIEWNO }}</th>
+            </tr>
+        </table>
+        <textarea class="board-title" v-model="board.TITLE"></textarea>
+        <textarea class="board-contents" v-model="board.CONTENTS"></textarea>
+    </div>  
+        <button @click="fnEdit()">저장</button>
+        <a href="board.html" style="margin: 20px auto;"><button>목록</button></a>
+</div>
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+              board:{
+                BOARDNO : "",
+                ID : "",
+                VIEWNO : "",
+                TITLE : "",
+                CONTENTS : ""
+
+              }
+            };
+        },
+        methods: {
+            boardDetail(boardno){
+                var self = this;
+                $.ajax({
+                    url: `http://localhost:3000/boarddetail?boardno=${boardno}`,
+                    dataType: "json",
+                    type: "GET",
+                    data: {}, // 쿼리 파라미터로 전달
+                    success: (data) => {
+                        console.log(data);
+                        self.board = data[0];
+                    },
+                
+                });
+
+            },
+            fnEdit(){
+                var self = this;
+                $.ajax({
+                url: `http://localhost:3000/board-edit`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    BOARDNO: this.board.BOARDNO,
+                    TITLE: this.board.TITLE,
+                    CONTENTS: this.board.CONTENTS
+                }),
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data.title);
+                    alert("게시글이 수정되었습니다");
+                    location.href = `board.html`; 
+                }
+            });
+},
+          
+            fngetList() {
+                var self = this;
+                $.ajax({
+                    url: 'http://localhost:3000/list',
+                    dataType: 'json',
+                    type: 'GET',
+                    success: function(data) {
+                        self.list = data;
+                        console.log(data);
+                    }
+                });
+            }
+        },
+        mounted() {
+        var urlParams = new URLSearchParams(window.location.search);
+        this.board.BOARDNO = urlParams.get('boardno') || '';
+        this.board.ID = urlParams.get('id') || '';
+        this.board.VIEWNO = urlParams.get('viewno') || '';
+        this.board.TITLE = decodeURIComponent(urlParams.get('title') || '');
+        this.board.CONTENTS = decodeURIComponent(urlParams.get('contents') || '');
+        }
+    });
+    app.mount('#app');
+</script>
+</body>
+</html>

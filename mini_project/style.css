@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200..900&display=swap');
+*{
+    font-family: "Noto Serif KR", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 400;
+}
+a {
+    color: inherit;
+    text-decoration: none;
+}
+img{
+    display: inline-block;
+    width: 200px;
+    margin: 10px 20px;
+}
+
+body{
+    background-image: url("images/고양이배경.png");
+    background-size: inherit;
+    background-position: bottom;
+}
+.title{
+    display: inline-block;
+    font-size: 50px;
+    text-align: center;
+    font-weight: 200;
+    align-items: center;
+}
+.a-link, .a-link:hover{
+    font-size: 20px;
+    color: gray;
+    text-decoration: none;
+    display: flex;
+    justify-content:space-between;
+}
+
+.freeboard-link:hover {
+    text-decoration: underline;
+}
+table,tr,th,td{
+    border : 1px solid gray;
+    border-collapse: collapse;
+    text-align: center;
+    height: 30px;
+}
+table {
+    margin: 20px auto; /* 상하 여백 20px, 좌우 자동 정렬 */
+    border-collapse: collapse; /* 테이블 테두리 겹치지 않게 */
+    width: 70%; /* 테이블 너비 설정 */
+}
+th{
+    background-color: palegoldenrod;
+}
+
+.label{
+    display: inline-block;
+    width: 120px;   
+    font-size: larger;
+}
+#container{
+    width: 600px; margin: 0 auto;
+}
+#board-container{
+    width: 600px; margin: 0 400px;
+}
+#container .box {
+    display: flex;
+    margin: 20px 120px;
+}
+input{
+    width: 200px;
+    height: 30px;
+}
+
+.radio-gender input[type="radio"]{
+    display: none;
+    width: 100px;
+}
+.radio-gender{
+    display: inline-block;
+    cursor: pointer;
+    line-height: 24px;
+}
+.radio-gender .radio-text{
+    position: relative;
+    padding: 7px 35px;
+    border: 1px solid gray;
+}
+.radio-gender input[type="radio"]:checked + .radio-text {
+    background-color: palegoldenrod;
+}
+
+button{
+    margin: 20px auto;
+    border: none;
+    display: flex;
+    border-radius: 15px;
+    padding: 10px 20px;
+    background-color: palegoldenrod;
+    color: black;
+    font-size: medium;
+    font-weight: 500;
+    cursor: pointer;
+    justify-content: center;
+}
+h1{
+    text-align: center;
+    padding: 100px 0px 40px 0px;
+}
+h2{
+    text-align: center;
+}
+.category{
+    display: inline-block;
+    border: none;
+    width: 150px;
+    margin: 100px 50px;
+    text-align: center;
+}
+.hotitem{
+    display: inline-block;
+    width: 400px;
+}
+.img-detail{
+    width: 600px;
+    text-align: center;
+}
+.prod-detail{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+}
+.prod-detail p{
+    text-align: center;
+    font-size: large;
+    color: black;
+    margin-top: 10px;
+}
+.prod-detail img{
+    width: 100%;
+    height: auto;
+    max-width: 200px;
+}
+.detail-view {
+    text-align: center;
+    padding: 20px;
+    max-width: 100%;
+    margin: 0 auto; 
+}
+.detail-view img {
+    width: 80%;
+    max-width: 1000px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+a{
+    text-decoration: none;
+    color: inherit;
+}
+
+.board-title{
+    width: 1200px;
+    height: max-content;
+}
+.board-contents{
+    width: 1200px;
+    height: 600px;
+    margin: 20px auto;
+    display: inline;
+    font-size: large;
+}
